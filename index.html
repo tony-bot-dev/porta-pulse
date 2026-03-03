@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PortaPulse — Predict Demand. Optimize Fleet. Capture Revenue.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal: #0D9488;
+            --teal-dark: #0F766E;
+            --teal-light: #14B8A6;
+            --slate: #1E293B;
+            --slate-light: #334155;
+            --cyan: #22D3EE;
+            --white: #F8FAFC;
+            --gray: #64748B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--white);
+            color: var(--slate);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--slate);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--teal), var(--cyan));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--slate-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--teal);
+        }
+
+        .cta-btn {
+            background: var(--teal);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .cta-btn:hover {
+            background: var(--teal-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 5% 4rem;
+            background: linear-gradient(180deg, #F0FDFA 0%, var(--white) 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--slate);
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--teal), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--teal);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Problem Section */
+        .problem {
+            padding: 5rem 5%;
+            background: var(--slate);
+            color: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: #94A3B8;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .problem-card {
+            background: var(--slate-light);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #475569;
+        }
+
+        .problem-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .problem-card .icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #EF4444;
+            font-size: 1rem;
+        }
+
+        .problem-card p {
+            color: #94A3B8;
+            font-size: 0.95rem;
+        }
+
+        /* Solution Section */
+        .solution {
+            padding: 5rem 5%;
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .solution-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            transition: all 0.3s;
+        }
+
+        .solution-card:hover {
+            border-color: var(--teal);
+            box-shadow: 0 10px 40px rgba(13, 148, 136, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .solution-card .icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--teal), var(--teal-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .solution-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .solution-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 5rem 5%;
+            background: #F0FDFA;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--teal);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            color: var(--gray);
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 5rem 5%;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--teal);
+            box-shadow: 0 20px 60px rgba(13, 148, 136, 0.15);
+            position: relative;
+        }
+
+        .pricing-card.featured::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--teal);
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--slate);
+            margin: 1rem 0;
+        }
+
+        .price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--gray);
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .pricing-card li {
+            padding: 0.5rem 0;
+            color: var(--slate-light);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pricing-card li::before {
+            content: '✓';
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        /* CTA */
+        .cta-section {
+            padding: 5rem 5%;
+            background: var(--slate);
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: #94A3B8;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-section .cta-btn {
+            background: var(--cyan);
+            color: var(--slate);
+            font-size: 1.125rem;
+            padding: 1rem 2rem;
+        }
+
+        .cta-section .cta-btn:hover {
+            background: #06B6D4;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 5%;
+            background: var(--slate);
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #94A3B8;
+        }
+
+        footer p {
+            font-size: 0.875rem;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-stats {
+                gap: 2rem;
+            }
+
+            .problem-grid, .solution-grid, .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">📊</div>
+            PortaPulse
+        </div>
+        <div class="nav-links">
+            <a href="#problem">Problem</a>
+            <a href="#solution">Solution</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#" class="cta-btn">Start Free Trial</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Predict Demand.<br><span>Optimize Fleet.</span> Capture Revenue.</h1>
+        <p>The first predictive analytics platform built specifically for portable sanitation companies. Know where the demand is before it arrives.</p>
+        <a href="#" class="cta-btn">Get Your Free Forecast</a>
+        
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-number">$20B+</div>
+                <div class="stat-label">Market Size</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">7.8%</div>
+                <div class="stat-label">Annual Growth</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Direct Competitors</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="problem" id="problem">
+        <div class="section-header">
+            <h2>The Industry's Biggest Problem</h2>
+            <p>Portable toilet rental companies are leaving money on the table every single day.</p>
+        </div>
+        
+        <div class="problem-grid">
+            <div class="problem-card">
+                <h3><span class="icon">🔥</span> Last-Minute Fire Drills</h3>
+                <p>Companies scramble to fulfill orders during festivals and construction peaks. No advance warning. No planning. Just chaos.</p>
+            </div>
+            <div class="problem-card">
+                <h3><span class="icon">📉</span> Missed Revenue</h3>
+                <p>Understocked because you couldn't predict demand. Watch competitors win contracts you could have caught.</p>
+            </div>
+            <div class="problem-card">
+                <h3><span class="icon">💸</span> Idle Inventory</h3>
+                <p>Fleet sits empty for days. Trucks depreciate. Drivers get paid to sit. No visibility into where to reposition.</p>
+            </div>
+            <div class="problem-card">
+                <h3><span class="icon">🎲</span> Guesswork Operations</h3>
+                <p>Decisions based on gut feeling and memory, not data. The industry is 20+ billion dollars and still runs on intuition.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="solution" id="solution">
+        <div class="section-header">
+            <h2>Meet PortaPulse</h2>
+            <p>Turn reactive logistics into strategic asset management.</p>
+        </div>
+        
+        <div class="solution-grid">
+            <div class="solution-card">
+                <div class="icon">📅</div>
+                <h3>Event Permit Tracking</h3>
+                <p>We scrape city permit databases to find festivals, concerts, sports events, and public gatherings before they make headlines.</p>
+            </div>
+            <div class="solution-card">
+                <div class="icon">🏗️</div>
+                <h3>Construction Intelligence</h3>
+                <p>Track building permits, demolition projects, and infrastructure work in your service area. Know where the next job site pops up.</p>
+            </div>
+            <div class="solution-card">
+                <div class="icon">🌤️</div>
+                <h3>Weather Correlation</h3>
+                <p>Our models factor in weather patterns. Rain cancels events. Heat slows construction. You know what's coming.</p>
+            </div>
+            <div class="solution-card">
+                <div class="icon">📍</div>
+                <h3>7-Day Demand Forecast</h3>
+                <p>Get a zip-code-level prediction of expected demand. Plan routes. Position inventory. Capture contracts before competitors do.</p>
+            </div>
+            <div class="solution-card">
+                <div class="icon">🚛</div>
+                <h3>GPS Fleet Integration</h3>
+                <p>Connect your existing GPS tracking. See your fleet overlaid with demand predictions. Make smarter deployment decisions.</p>
+            </div>
+            <div class="solution-card">
+                <div class="icon">📈</div>
+                <h3>Historical Learning</h3>
+                <p>Our AI learns from your past rental data. The more you use it, the more accurate your predictions become.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="section-header">
+            <h2>How It Works</h2>
+            <p>From sign-up to actionable insights in minutes.</p>
+        </div>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Connect Your Data</h3>
+                    <p>Enter your service areas and connect your GPS tracking. We'll start aggregating public data immediately.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>We Build the Model</h3>
+                    <p>Our system processes event permits, construction data, weather, and your historical performance to build a custom forecast.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Get Predictions</h3>
+                    <p>View your 7-day demand forecast by zip code. See where to move trucks. Know which contracts to chase.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Optimize & Scale</h3>
+                    <p>Watch your utilization rates climb. Capture premium pricing during spikes. Grow without adding trucks.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="section-header">
+            <h2>Simple, Transparent Pricing</h2>
+            <p>Start free. Scale as you grow.</p>
+        </div>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Insights</h3>
+                <p>For curious operators</p>
+                <div class="price">Free</div>
+                <ul>
+                    <li>Weekly industry report</li>
+                    <li>Webinar library access</li>
+                    <li>Basic market trends</li>
+                    <li>Email newsletter</li>
+                </ul>
+                <a href="#" class="cta-btn" style="background: #E2E8F0; color: var(--slate);">Sign Up Free</a>
+            </div>
+            
+            <div class="pricing-card featured">
+                <h3>Starter</h3>
+                <p>For small operators</p>
+                <div class="price">$100<span>/month</span></div>
+                <ul>
+                    <li>7-day demand forecast</li>
+                    <li>Event permit alerts</li>
+                    <li>Basic dashboard</li>
+                    <li>3 service areas</li>
+                    <li>Email support</li>
+                </ul>
+                <a href="#" class="cta-btn">Start 14-Day Trial</a>
+            </div>
+            
+            <div class="pricing-card">
+                <h3>Pro</h3>
+                <p>For growth-focused companies</p>
+                <div class="price">$2,500<span>/month</span></div>
+                <ul>
+                    <li>Everything in Starter</li>
+                    <li>GPS fleet integration</li>
+                    <li>Unlimited service areas</li>
+                    <li>Custom API access</li>
+                    <li>Priority support</li>
+                    <li>Weather overlay</li>
+                    <li>White-label reports</li>
+                </ul>
+                <a href="#" class="cta-btn" style="background: #E2E8F0; color: var(--slate);">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <h2>Ready to Predict the Future?</h2>
+        <p>Join the waitlist for early access. Limited spots available for beta.</p>
+        <a href="#" class="cta-btn">Get Early Access</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 PortaPulse. All rights reserved.</p>
+    </footer>
+</body>
+</html>
