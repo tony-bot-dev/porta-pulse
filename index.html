@@ -1,663 +1,417 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PortaPulse — Predict Demand. Optimize Fleet. Capture Revenue.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --teal: #0D9488;
-            --teal-dark: #0F766E;
-            --teal-light: #14B8A6;
-            --slate: #1E293B;
-            --slate-light: #334155;
-            --cyan: #22D3EE;
-            --white: #F8FAFC;
-            --gray: #64748B;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--white);
-            color: var(--slate);
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.25rem 5%;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            border-bottom: 1px solid #E2E8F0;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--slate);
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--teal), var(--cyan));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--slate-light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--teal);
-        }
-
-        .cta-btn {
-            background: var(--teal);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .cta-btn:hover {
-            background: var(--teal-dark);
-            transform: translateY(-2px);
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 8rem 5% 4rem;
-            background: linear-gradient(180deg, #F0FDFA 0%, var(--white) 100%);
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            color: var(--slate);
-        }
-
-        .hero h1 span {
-            background: linear-gradient(135deg, var(--teal), var(--cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--gray);
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 4rem;
-            margin-top: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--teal);
-            font-family: 'Space Mono', monospace;
-        }
-
-        .stat-label {
-            color: var(--gray);
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Problem Section */
-        .problem {
-            padding: 5rem 5%;
-            background: var(--slate);
-            color: white;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .section-header p {
-            color: #94A3B8;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .problem-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .problem-card {
-            background: var(--slate-light);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid #475569;
-        }
-
-        .problem-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .problem-card .icon {
-            width: 32px;
-            height: 32px;
-            background: rgba(239, 68, 68, 0.2);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #EF4444;
-            font-size: 1rem;
-        }
-
-        .problem-card p {
-            color: #94A3B8;
-            font-size: 0.95rem;
-        }
-
-        /* Solution Section */
-        .solution {
-            padding: 5rem 5%;
-        }
-
-        .solution-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .solution-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid #E2E8F0;
-            transition: all 0.3s;
-        }
-
-        .solution-card:hover {
-            border-color: var(--teal);
-            box-shadow: 0 10px 40px rgba(13, 148, 136, 0.1);
-            transform: translateY(-4px);
-        }
-
-        .solution-card .icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--teal), var(--teal-light));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .solution-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .solution-card p {
-            color: var(--gray);
-            font-size: 0.95rem;
-        }
-
-        /* How It Works */
-        .how-it-works {
-            padding: 5rem 5%;
-            background: #F0FDFA;
-        }
-
-        .steps {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .step {
-            display: flex;
-            gap: 1.5rem;
-            align-items: flex-start;
-        }
-
-        .step-number {
-            width: 48px;
-            height: 48px;
-            background: var(--teal);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-
-        .step-content h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .step-content p {
-            color: var(--gray);
-        }
-
-        /* Pricing */
-        .pricing {
-            padding: 5rem 5%;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .pricing-card {
-            background: white;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            padding: 2.5rem;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .pricing-card.featured {
-            border-color: var(--teal);
-            box-shadow: 0 20px 60px rgba(13, 148, 136, 0.15);
-            position: relative;
-        }
-
-        .pricing-card.featured::before {
-            content: 'Most Popular';
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--teal);
-            color: white;
-            padding: 0.25rem 1rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .pricing-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .price {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--slate);
-            margin: 1rem 0;
-        }
-
-        .price span {
-            font-size: 1rem;
-            font-weight: 400;
-            color: var(--gray);
-        }
-
-        .pricing-card ul {
-            list-style: none;
-            text-align: left;
-            margin: 1.5rem 0;
-        }
-
-        .pricing-card li {
-            padding: 0.5rem 0;
-            color: var(--slate-light);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .pricing-card li::before {
-            content: '✓';
-            color: var(--teal);
-            font-weight: 700;
-        }
-
-        /* CTA */
-        .cta-section {
-            padding: 5rem 5%;
-            background: var(--slate);
-            text-align: center;
-            color: white;
-        }
-
-        .cta-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta-section p {
-            color: #94A3B8;
-            margin-bottom: 2rem;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-section .cta-btn {
-            background: var(--cyan);
-            color: var(--slate);
-            font-size: 1.125rem;
-            padding: 1rem 2rem;
-        }
-
-        .cta-section .cta-btn:hover {
-            background: #06B6D4;
-        }
-
-        /* Footer */
-        footer {
-            padding: 3rem 5%;
-            background: var(--slate);
-            border-top: 1px solid #334155;
-            text-align: center;
-            color: #94A3B8;
-        }
-
-        footer p {
-            font-size: 0.875rem;
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hero-stats {
-                gap: 2rem;
-            }
-
-            .problem-grid, .solution-grid, .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PortaPulse — Industrial-Grade Demand Forecasting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg: #000000;
+      --surface: #0A0A0A;
+      --border: #1F1F1F;
+      --text: #FFFFFF;
+      --text-muted: #666666;
+      --accent-lime: #39FF14;
+      --accent-blue: #00D4FF;
+      --accent-orange: #FF6B35;
+    }
+    
+    * {
+      border-radius: 0 !important;
+    }
+    
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    
+    .grid-bg {
+      background-image: 
+        linear-gradient(rgba(57, 255, 20, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    
+    .glow-lime {
+      box-shadow: 0 0 30px rgba(57, 255, 20, 0.2);
+    }
+    
+    .glow-blue {
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+    }
+    
+    @keyframes scan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+    
+    .scanline::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--accent-lime), transparent);
+      animation: scan 3s linear infinite;
+      opacity: 0.3;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade {
+      animation: fadeIn 0.6s ease forwards;
+    }
+    
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+    
+    .terminal-border {
+      border: 1px solid var(--border);
+    }
+    
+    .terminal-border:hover {
+      border-color: var(--accent-lime);
+    }
+    
+    .led {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-lime);
+      box-shadow: 0 0 10px var(--accent-lime);
+    }
+    
+    .led-blink {
+      animation: blink 1s ease-in-out infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav>
-        <div class="logo">
-            <div class="logo-icon">📊</div>
-            PortaPulse
-        </div>
-        <div class="nav-links">
-            <a href="#problem">Problem</a>
-            <a href="#solution">Solution</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#" class="cta-btn">Start Free Trial</a>
-        </div>
-    </nav>
+<body class="grid-bg min-h-screen">
+  <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-sm border-b border-[#1F1F1F]">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="led led-blink"></div>
+        <span class="mono text-xl font-semibold tracking-tight">PORTAPULSE</span>
+      </div>
+      <div class="hidden md:flex items-center space-x-8 text-sm">
+        <a href="#features" class="mono text-gray-400 hover:text-[#39FF14] transition-colors">// FEATURES</a>
+        <a href="#how-it-works" class="mono text-gray-400 hover:text-[#39FF14] transition-colors">// PROCESS</a>
+        <a href="#pricing" class="mono text-gray-400 hover:text-[#39FF14] transition-colors">// PRICING</a>
+        <a href="#" class="mono bg-[#39FF14] text-black px-5 py-2 font-medium hover:bg-[#32DD12] transition-colors">GET FORECAST</a>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <h1>Predict Demand.<br><span>Optimize Fleet.</span> Capture Revenue.</h1>
-        <p>The first predictive analytics platform built specifically for portable sanitation companies. Know where the demand is before it arrives.</p>
-        <a href="#" class="cta-btn">Get Your Free Forecast</a>
-        
-        <div class="hero-stats">
-            <div class="stat">
-                <div class="stat-number">$20B+</div>
-                <div class="stat-label">Market Size</div>
+  <main class="pt-32 pb-24">
+    <section class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-12 gap-8">
+        <div class="col-span-12 lg:col-span-8">
+          <div class="animate-fade">
+            <div class="mono text-[#39FF14] text-sm mb-6 flex items-center">
+              <span class="w-2 h-2 bg-[#39FF14] mr-2"></span>
+              PREDICTIVE ANALYTICS v2.0
             </div>
-            <div class="stat">
-                <div class="stat-number">7.8%</div>
-                <div class="stat-label">Annual Growth</div>
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+              KNOW WHERE<br>
+              <span class="text-[#00D4FF]">DEMAND</span> ARRIVES.
+            </h1>
+            <p class="text-xl text-gray-400 max-w-lg leading-relaxed mb-10">
+              The first predictive analytics platform built specifically for portable sanitation. 
+              Data-driven decisions. Zero guesswork.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a href="#" class="mono bg-[#39FF14] text-black px-8 py-4 font-semibold hover:bg-[#32DD12] transition-all glow-lime">
+                GET FREE FORECAST
+              </a>
+              <a href="#features" class="mono border border-[#333] text-white px-8 py-4 font-semibold hover:border-[#39FF14] hover:text-[#39FF14] transition-all">
+                VIEW SYSTEM
+              </a>
             </div>
-            <div class="stat">
-                <div class="stat-number">0</div>
-                <div class="stat-label">Direct Competitors</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Problem -->
-    <section class="problem" id="problem">
-        <div class="section-header">
-            <h2>The Industry's Biggest Problem</h2>
-            <p>Portable toilet rental companies are leaving money on the table every single day.</p>
-        </div>
-        
-        <div class="problem-grid">
-            <div class="problem-card">
-                <h3><span class="icon">🔥</span> Last-Minute Fire Drills</h3>
-                <p>Companies scramble to fulfill orders during festivals and construction peaks. No advance warning. No planning. Just chaos.</p>
-            </div>
-            <div class="problem-card">
-                <h3><span class="icon">📉</span> Missed Revenue</h3>
-                <p>Understocked because you couldn't predict demand. Watch competitors win contracts you could have caught.</p>
-            </div>
-            <div class="problem-card">
-                <h3><span class="icon">💸</span> Idle Inventory</h3>
-                <p>Fleet sits empty for days. Trucks depreciate. Drivers get paid to sit. No visibility into where to reposition.</p>
-            </div>
-            <div class="problem-card">
-                <h3><span class="icon">🎲</span> Guesswork Operations</h3>
-                <p>Decisions based on gut feeling and memory, not data. The industry is 20+ billion dollars and still runs on intuition.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Solution -->
-    <section class="solution" id="solution">
-        <div class="section-header">
-            <h2>Meet PortaPulse</h2>
-            <p>Turn reactive logistics into strategic asset management.</p>
+          </div>
         </div>
         
-        <div class="solution-grid">
-            <div class="solution-card">
-                <div class="icon">📅</div>
-                <h3>Event Permit Tracking</h3>
-                <p>We scrape city permit databases to find festivals, concerts, sports events, and public gatherings before they make headlines.</p>
+        <div class="col-span-12 lg:col-span-4 mt-12 lg:mt-0">
+          <div class="animate-fade delay-200 terminal-border bg-[#0A0A0A] p-6">
+            <div class="mono text-xs text-gray-500 mb-4 flex items-center justify-between">
+              <span>MARKET TELEMETRY</span>
+              <span class="text-[#39FF14]">LIVE</span>
             </div>
-            <div class="solution-card">
-                <div class="icon">🏗️</div>
-                <h3>Construction Intelligence</h3>
-                <p>Track building permits, demolition projects, and infrastructure work in your service area. Know where the next job site pops up.</p>
+            <div class="space-y-6">
+              <div class="border-b border-[#1F1F1F] pb-4">
+                <div class="mono text-4xl font-bold text-[#00D4FF]">$20B+</div>
+                <div class="mono text-xs text-gray-500 mt-1">MARKET SIZE // US PORTABLE SANITATION</div>
+              </div>
+              <div class="border-b border-[#1F1F1F] pb-4">
+                <div class="mono text-4xl font-bold text-[#39FF14]">7.8%</div>
+                <div class="mono text-xs text-gray-500 mt-1">ANNUAL GROWTH RATE</div>
+              </div>
+              <div>
+                <div class="mono text-4xl font-bold text-[#FF6B35]">0</div>
+                <div class="mono text-xs text-gray-500 mt-1">DIRECT COMPETITORS // FIRST-MOVER</div>
+              </div>
             </div>
-            <div class="solution-card">
-                <div class="icon">🌤️</div>
-                <h3>Weather Correlation</h3>
-                <p>Our models factor in weather patterns. Rain cancels events. Heat slows construction. You know what's coming.</p>
-            </div>
-            <div class="solution-card">
-                <div class="icon">📍</div>
-                <h3>7-Day Demand Forecast</h3>
-                <p>Get a zip-code-level prediction of expected demand. Plan routes. Position inventory. Capture contracts before competitors do.</p>
-            </div>
-            <div class="solution-card">
-                <div class="icon">🚛</div>
-                <h3>GPS Fleet Integration</h3>
-                <p>Connect your existing GPS tracking. See your fleet overlaid with demand predictions. Make smarter deployment decisions.</p>
-            </div>
-            <div class="solution-card">
-                <div class="icon">📈</div>
-                <h3>Historical Learning</h3>
-                <p>Our AI learns from your past rental data. The more you use it, the more accurate your predictions become.</p>
-            </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- How It Works -->
-    <section class="how-it-works">
-        <div class="section-header">
-            <h2>How It Works</h2>
-            <p>From sign-up to actionable insights in minutes.</p>
+    <section class="py-24 border-t border-[#1F1F1F] mt-24">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="mono text-xs text-gray-500 mb-8">// SYSTEM ALERTS</div>
+        <div class="grid grid-cols-12 gap-8">
+          <div class="col-span-12 md:col-span-6 lg:col-span-3">
+            <div class="terminal-border bg-[#0A0A0A] p-6 h-full hover:border-[#FF6B35] transition-colors">
+              <div class="mono text-[#FF6B35] text-2xl mb-4">⚠</div>
+              <h3 class="font-semibold text-lg mb-2">Last-Minute Fire Drills</h3>
+              <p class="text-gray-500 text-sm">Companies scramble to fulfill orders during festivals and peaks. No warning. Just chaos.</p>
+            </div>
+          </div>
+          <div class="col-span-12 md:col-span-6 lg:col-span-3">
+            <div class="terminal-border bg-[#0A0A0A] p-6 h-full hover:border-[#FF6B35] transition-colors">
+              <div class="mono text-[#FF6B35] text-2xl mb-4">↓</div>
+              <h3 class="font-semibold text-lg mb-2">Missed Revenue</h3>
+              <p class="text-gray-500 text-sm">Understocked because you couldn't predict demand. Watch competitors win contracts.</p>
+            </div>
+          </div>
+          <div class="col-span-12 md:col-span-6 lg:col-span-3">
+            <div class="terminal-border bg-[#0A0A0A] p-6 h-full hover:border-[#FF6B35] transition-colors">
+              <div class="mono text-[#FF6B35] text-2xl mb-4">$</div>
+              <h3 class="font-semibold text-lg mb-2">Idle Inventory</h3>
+              <p class="text-gray-500 text-sm">Fleet sits empty. Trucks depreciate. Drivers get paid to sit. Zero visibility.</p>
+            </div>
+          </div>
+          <div class="col-span-12 md:col-span-6 lg:col-span-3">
+            <div class="terminal-border bg-[#0A0A0A] p-6 h-full hover:border-[#FF6B35] transition-colors">
+              <div class="mono text-[#FF6B35] text-2xl mb-4">?</div>
+              <h3 class="font-semibold text-lg mb-2">Guesswork Ops</h3>
+              <p class="text-gray-500 text-sm">$20B+ industry still runs on intuition. Data exists. You're not using it.</p>
+            </div>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <section id="features" class="py-24 border-t border-[#1F1F1F]">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="mono text-xs text-gray-500 mb-8">// FEATURE_MODULES</div>
+        <h2 class="text-4xl font-bold mb-16">PREDICTIVE <span class="text-[#00D4FF]">ENGINE</span></h2>
         
-        <div class="steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <h3>Connect Your Data</h3>
-                    <p>Enter your service areas and connect your GPS tracking. We'll start aggregating public data immediately.</p>
-                </div>
+        <div class="grid grid-cols-12 gap-8">
+          <div class="col-span-12 lg:col-span-6">
+            <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
+              <div class="flex items-start justify-between mb-6">
+                <div class="mono text-[#39FF14] text-sm">01</div>
+                <div class="mono text-[#00D4FF] text-xs">ACTIVE</div>
+              </div>
+              <h3 class="text-xl font-semibold mb-3">Event Permit Tracking</h3>
+              <p class="text-gray-400 mb-4">We scrape city permit databases to find festivals, concerts, sports, and gatherings before they make headlines.</p>
+              <div class="mono text-xs text-gray-600">SOURCES: MUNICIPAL_APIS // PERMIT_DATABASES // EVENT_APIS</div>
             </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <h3>We Build the Model</h3>
-                    <p>Our system processes event permits, construction data, weather, and your historical performance to build a custom forecast.</p>
-                </div>
+          </div>
+          
+          <div class="col-span-12 lg:col-span-6">
+            <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
+              <div class="flex items-start justify-between mb-6">
+                <div class="mono text-[#39FF14] text-sm">02</div>
+                <div class="mono text-[#00D4FF] text-xs">ACTIVE</div>
+              </div>
+              <h3 class="text-xl font-semibold mb-3">Construction Intelligence</h3>
+              <p class="text-gray-400 mb-4">Track building permits, demolition, and infrastructure work. Know where job sites pop up.</p>
+              <div class="mono text-xs text-gray-600">SOURCES: BUILDING_DEPT // GIS_MAPS // CONTRACTOR_DB</div>
             </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <h3>Get Predictions</h3>
-                    <p>View your 7-day demand forecast by zip code. See where to move trucks. Know which contracts to chase.</p>
-                </div>
+          </div>
+          
+          <div class="col-span-12 lg:col-span-6">
+            <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
+              <div class="flex items-start justify-between mb-6">
+                <div class="mono text-[#39FF14] text-sm">03</div>
+                <div class="mono text-[#00D4FF] text-xs">ACTIVE</div>
+              </div>
+              <h3 class="text-xl font-semibold mb-3">Weather Correlation</h3>
+              <p class="text-gray-400 mb-4">Our models factor weather patterns. Rain cancels events. Heat slows construction. You know what's coming.</p>
+              <div class="mono text-xs text-gray-600">SOURCES: NOAA_API // WEATHER_FORECAST // HISTORICAL_DATA</div>
             </div>
-            <div class="step">
-                <div class="step-number">4</div>
-                <div class="step-content">
-                    <h3>Optimize & Scale</h3>
-                    <p>Watch your utilization rates climb. Capture premium pricing during spikes. Grow without adding trucks.</p>
-                </div>
+          </div>
+          
+          <div class="col-span-12 lg:col-span-6">
+            <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
+              <div class="flex items-start justify-between mb-6">
+                <div class="mono text-[#39FF14] text-sm">04</div>
+                <div class="mono text-[#00D4FF] text-xs">ACTIVE</div>
+              </div>
+              <h3 class="text-xl font-semibold mb-3">7-Day Demand Forecast</h3>
+              <p class="text-gray-400 mb-4">Zip-code-level predictions. Plan routes. Position inventory. Capture contracts before competitors.</p>
+              <div class="mono text-xs text-gray-600">OUTPUT: DEMAND_HEATMAP // ROUTE_OPTIMIZATION // ALERTS</div>
             </div>
+          </div>
+          
+          <div class="col-span-12 lg:col-span-6">
+            <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
+              <div class="flex items-start justify-between mb-6">
+                <div class="mono text-[#39FF14] text-sm">05</div>
+                <div class="mono text-[#00D4FF] text-xs">ACTIVE</div>
+              </div>
+              <h3 class="text-xl font-semibold mb-3">GPS Fleet Integration</h3>
+              <p class="text-gray-400 mb-4">Connect existing GPS tracking. See fleet overlaid with demand predictions. Smarter deployment.</p>
+              <div class="mono text-xs text-gray-600">INTEGRATIONS: VERIFONE // GPS_IQ // FLEETMATICS // SAMO</div>
+            </div>
+          </div>
+          
+          <div class="col-span-12 lg:col-span-6">
+            <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
+              <div class="flex items-start justify-between mb-6">
+                <div class="mono text-[#39FF14] text-sm">06</div>
+                <div class="mono text-[#00D4FF] text-xs">TRAINING</div>
+              </div>
+              <h3 class="text-xl font-semibold mb-3">Historical Learning</h3>
+              <p class="text-gray-400 mb-4">AI learns from your past data. More usage = more accurate predictions. Your model gets smarter.</p>
+              <div class="mono text-xs text-gray-600">MODEL: ADAPTIVE_ML // CONTINUOUS_TRAINING</div>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- Pricing -->
-    <section class="pricing" id="pricing">
-        <div class="section-header">
-            <h2>Simple, Transparent Pricing</h2>
-            <p>Start free. Scale as you grow.</p>
-        </div>
+    <section id="how-it-works" class="py-24 border-t border-[#1F1F1F] bg-[#050505]">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="mono text-xs text-gray-500 mb-8">// DEPLOYMENT_SEQUENCE</div>
+        <h2 class="text-4xl font-bold mb-16">GET <span class="text-[#39FF14]">OPERATIONAL</span></h2>
         
-        <div class="pricing-grid">
-            <div class="pricing-card">
-                <h3>Insights</h3>
-                <p>For curious operators</p>
-                <div class="price">Free</div>
-                <ul>
-                    <li>Weekly industry report</li>
-                    <li>Webinar library access</li>
-                    <li>Basic market trends</li>
-                    <li>Email newsletter</li>
-                </ul>
-                <a href="#" class="cta-btn" style="background: #E2E8F0; color: var(--slate);">Sign Up Free</a>
+        <div class="grid grid-cols-12 gap-8">
+          <div class="col-span-12 md:col-span-6 lg:col-span-3">
+            <div class="relative">
+              <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">01</div>
+              <h3 class="text-xl font-semibold mb-3">Connect Data</h3>
+              <p class="text-gray-400">Enter service areas. Connect GPS. We aggregate public data immediately.</p>
             </div>
-            
-            <div class="pricing-card featured">
-                <h3>Starter</h3>
-                <p>For small operators</p>
-                <div class="price">$100<span>/month</span></div>
-                <ul>
-                    <li>7-day demand forecast</li>
-                    <li>Event permit alerts</li>
-                    <li>Basic dashboard</li>
-                    <li>3 service areas</li>
-                    <li>Email support</li>
-                </ul>
-                <a href="#" class="cta-btn">Start 14-Day Trial</a>
+          </div>
+          <div class="col-span-12 md:col-span-6 lg:col-span-3">
+            <div class="relative">
+              <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">02</div>
+              <h3 class="text-xl font-semibold mb-3">We Build Model</h3>
+              <p class="text-gray-400">System processes permits, weather, construction, and your history.</p>
             </div>
-            
-            <div class="pricing-card">
-                <h3>Pro</h3>
-                <p>For growth-focused companies</p>
-                <div class="price">$2,500<span>/month</span></div>
-                <ul>
-                    <li>Everything in Starter</li>
-                    <li>GPS fleet integration</li>
-                    <li>Unlimited service areas</li>
-                    <li>Custom API access</li>
-                    <li>Priority support</li>
-                    <li>Weather overlay</li>
-                    <li>White-label reports</li>
-                </ul>
-                <a href="#" class="cta-btn" style="background: #E2E8F0; color: var(--slate);">Contact Sales</a>
+          </div>
+          <div class="col-span-12 md:col-span-6 lg:col-span-3">
+            <div class="relative">
+              <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">03</div>
+              <h3 class="text-xl font-semibold mb-3">Get Predictions</h3>
+              <p class="text-gray-400">7-day forecast by zip. See where to move trucks. Chase contracts.</p>
             </div>
+          </div>
+          <div class="col-span-12 md:col-span-6 lg:col-span-3">
+            <div class="relative">
+              <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">04</div>
+              <h3 class="text-xl font-semibold mb-3">Optimize & Scale</h3>
+              <p class="text-gray-400">Utilization climbs. Capture premium pricing. Grow without adding trucks.</p>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- CTA -->
-    <section class="cta-section">
-        <h2>Ready to Predict the Future?</h2>
-        <p>Join the waitlist for early access. Limited spots available for beta.</p>
-        <a href="#" class="cta-btn">Get Early Access</a>
+    <section id="pricing" class="py-24 border-t border-[#1F1F1F]">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="mono text-xs text-gray-500 mb-8">// SUBSCRIPTION_TIERS</div>
+        <h2 class="text-4xl font-bold mb-16">SELECT <span class="text-[#00D4FF]">PLAN</span></h2>
+        
+        <div class="grid grid-cols-12 gap-8 max-w-5xl mx-auto">
+          <div class="col-span-12 md:col-span-4">
+            <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
+              <div class="mono text-xs text-gray-500 mb-2">TIER_01</div>
+              <h3 class="text-2xl font-semibold mb-2">Insights</h3>
+              <div class="mono text-gray-400 mb-6">For curious operators</div>
+              <div class="mono text-4xl font-bold mb-6">FREE</div>
+              <ul class="space-y-3 text-gray-400 text-sm mb-8">
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Weekly industry report</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Webinar library access</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Basic market trends</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Email newsletter</li>
+              </ul>
+              <a href="#" class="mono block text-center border border-[#333] text-white px-6 py-3 hover:border-[#39FF14] hover:text-[#39FF14] transition-all">SIGN UP FREE</a>
+            </div>
+          </div>
+          
+          <div class="col-span-12 md:col-span-4">
+            <div class="terminal-border bg-[#0A0A0A] p-8 h-full border-[#00D4FF] relative">
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#00D4FF] text-black mono text-xs px-3 py-1">RECOMMENDED</div>
+              <div class="mono text-xs text-gray-500 mb-2">TIER_02</div>
+              <h3 class="text-2xl font-semibold mb-2">Starter</h3>
+              <div class="mono text-gray-400 mb-6">For small operators</div>
+              <div class="mono text-4xl font-bold mb-6">$100<span class="text-gray-500 text-lg">/mo</span></div>
+              <ul class="space-y-3 text-gray-400 text-sm mb-8">
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> 7-day demand forecast</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Event permit alerts</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Basic dashboard</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> 3 service areas</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Email support</li>
+              </ul>
+              <a href="#" class="mono block text-center bg-[#00D4FF] text-black px-6 py-3 font-semibold hover:bg-[#00B8E0] transition-all glow-blue">START TRIAL</a>
+            </div>
+          </div>
+          
+          <div class="col-span-12 md:col-span-4">
+            <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
+              <div class="mono text-xs text-gray-500 mb-2">TIER_03</div>
+              <h3 class="text-2xl font-semibold mb-2">Pro</h3>
+              <div class="mono text-gray-400 mb-6">Growth-focused</div>
+              <div class="mono text-4xl font-bold mb-6">$2,500<span class="text-gray-500 text-lg">/mo</span></div>
+              <ul class="space-y-3 text-gray-400 text-sm mb-8">
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Everything in Starter</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> GPS fleet integration</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Unlimited service areas</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Custom API access</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Priority support</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> Weather overlay</li>
+                <li class="flex items-center"><span class="text-[#39FF14] mr-2">✓</span> White-label reports</li>
+              </ul>
+              <a href="#" class="mono block text-center border border-[#333] text-white px-6 py-3 hover:border-[#39FF14] hover:text-[#39FF14] transition-all">CONTACT SALES</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2026 PortaPulse. All rights reserved.</p>
-    </footer>
+    <section class="py-24 border-t border-[#1F1F1F] bg-[#050505]">
+      <div class="max-w-3xl mx-auto px-6 text-center">
+        <div class="mono text-[#39FF14] text-sm mb-6">// JOIN_THE_NETWORK</div>
+        <h2 class="text-4xl font-bold mb-6">READY TO <span class="text-[#00D4FF]">PREDICT</span> THE FUTURE?</h2>
+        <p class="text-gray-400 text-lg mb-10">Early access spots available. Limited capacity for beta.</p>
+        <a href="#" class="mono inline-block bg-[#39FF14] text-black px-10 py-4 font-semibold hover:bg-[#32DD12] transition-all glow-lime">GET EARLY ACCESS</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-[#050505] py-12 border-t border-[#1F1F1F]">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center space-x-3 mb-4 md:mb-0">
+          <div class="led"></div>
+          <span class="mono font-semibold">PORTAPULSE</span>
+        </div>
+        <div class="mono text-xs text-gray-600">© 2026 PORTAPULSE // ALL RIGHTS RESERVED</div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

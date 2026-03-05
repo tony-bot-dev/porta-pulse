@@ -1,0 +1,23 @@
+{
+  "name": "porta-pulse",
+  "version": "1.0.0",
+  "description": "Predictive demand forecasting for the portable sanitation industry.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tony-bot-dev/porta-pulse.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tony-bot-dev/porta-pulse/issues"
+  },
+  "homepage": "https://github.com/tony-bot-dev/porta-pulse#readme",
+  "devDependencies": {
+    "vercel": "^50.25.6"
+  }
+}
