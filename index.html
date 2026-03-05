@@ -6,7 +6,7 @@
   <title>PortaPulse — Industrial-Grade Demand Forecasting</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -18,11 +18,15 @@
       --accent-lime: #39FF14;
       --accent-blue: #00D4FF;
       --accent-orange: #FF6B35;
+      --poly-green: #1b5e20;
+      --poly-green-dark: #0d3311;
+      --plastic-sheen: rgba(255, 255, 255, 0.15);
+      --groove-shadow: rgba(0, 0, 0, 0.3);
+      --occupied-red: #d32f2f;
+      --vacant-green: #388e3c;
     }
     
-    * {
-      border-radius: 0 !important;
-    }
+    * { border-radius: 0 !important; }
     
     body {
       font-family: 'IBM Plex Sans', sans-serif;
@@ -31,9 +35,7 @@
       -webkit-font-smoothing: antialiased;
     }
     
-    .mono {
-      font-family: 'IBM Plex Mono', monospace;
-    }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
     
     .grid-bg {
       background-image: 
@@ -42,71 +44,400 @@
       background-size: 40px 40px;
     }
     
-    .glow-lime {
-      box-shadow: 0 0 30px rgba(57, 255, 20, 0.2);
-    }
-    
-    .glow-blue {
-      box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
-    }
+    .glow-lime { box-shadow: 0 0 30px rgba(57, 255, 20, 0.2); }
+    .glow-blue { box-shadow: 0 0 30px rgba(0, 212, 255, 0.2); }
     
     @keyframes scan {
       0% { transform: translateY(-100%); }
       100% { transform: translateY(100%); }
     }
     
-    .scanline::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, transparent, var(--accent-lime), transparent);
-      animation: scan 3s linear infinite;
-      opacity: 0.3;
-    }
-    
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
-    .animate-fade {
-      animation: fadeIn 0.6s ease forwards;
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
+    .animate-fade { animation: fadeIn 0.6s ease forwards; }
     .delay-100 { animation-delay: 0.1s; }
     .delay-200 { animation-delay: 0.2s; }
     .delay-300 { animation-delay: 0.3s; }
     .delay-400 { animation-delay: 0.4s; }
     
-    .terminal-border {
-      border: 1px solid var(--border);
-    }
+    .terminal-border { border: 1px solid var(--border); }
+    .terminal-border:hover { border-color: var(--accent-lime); }
     
-    .terminal-border:hover {
-      border-color: var(--accent-lime);
+    .led { width: 8px; height: 8px; background: var(--accent-lime); box-shadow: 0 0 10px var(--accent-lime); }
+    .led-blink { animation: blink 1s ease-in-out infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* ── UNIT CARD ── */
+    .unit-container {
+      position: relative;
+      width: 280px;
+      height: 460px;
+      background: var(--poly-green);
+      border-radius: 16px 16px 6px 6px !important;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 
+        0 30px 60px -12px rgba(0,0,0,0.5),
+        inset 0 4px 0 var(--plastic-sheen),
+        inset 2px 0 10px rgba(0,0,0,0.2);
+      border: 2px solid rgba(0,0,0,0.2);
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
+      cursor: pointer;
+      animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s backwards;
+      flex-shrink: 0;
     }
-    
-    .led {
-      width: 8px;
-      height: 8px;
-      background: var(--accent-lime);
-      box-shadow: 0 0 10px var(--accent-lime);
+
+    .unit-container:hover {
+      transform: translateY(-15px) rotateX(4deg);
+      box-shadow: 0 50px 80px -20px rgba(0,0,0,0.7);
     }
-    
-    .led-blink {
-      animation: blink 1s ease-in-out infinite;
+
+    .ribwork {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        90deg, transparent, transparent 40px,
+        var(--groove-shadow) 42px, var(--plastic-sheen) 44px, transparent 46px
+      );
+      pointer-events: none;
     }
-    
-    @keyframes blink {
+
+    .unit-vent {
+      height: 50px;
+      width: 100%;
+      background: #1a1c1e;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 3px;
+      padding: 12px;
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+      border-bottom: 4px solid rgba(0,0,0,0.4);
+      z-index: 2;
+    }
+
+    .vent-slot { background: #000; border-radius: 2px !important; height: 100%; }
+
+    .content-panel {
+      flex: 1;
+      margin: 20px;
+      margin-top: 8px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 10px !important;
+      border: 3px solid rgba(0,0,0,0.2);
+      box-shadow: inset 0 4px 12px rgba(0,0,0,0.4);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      position: relative;
+    }
+
+    .indicator-track {
+      height: 36px;
+      width: 90px;
+      background: #1a1c1e;
+      border-radius: 18px !important;
+      margin-bottom: 24px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      border: 2px solid rgba(255,255,255,0.05);
+    }
+
+    .indicator-slider {
+      width: 40px;
+      height: 28px;
+      background: var(--vacant-green);
+      border-radius: 14px !important;
+      box-shadow: 0 0 15px var(--vacant-green);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .unit-container:hover .indicator-slider {
+      background: var(--occupied-red);
+      box-shadow: 0 0 15px var(--occupied-red);
+      transform: translateX(42px);
+    }
+
+    .status-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .unit-id {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 0.9;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .unit-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.1);
+      padding: 3px 6px;
+      border-radius: 3px !important;
+      align-self: flex-start;
+    }
+
+    .data-grid {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .data-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    .data-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      color: #fff;
+      display: block;
+      font-weight: 500;
+    }
+
+    .door-latch {
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 80px;
+      background: #2a2d30;
+      border-radius: 3px 0 0 3px !important;
+      box-shadow: -4px 0 10px rgba(0,0,0,0.3);
+      border-left: 2px solid rgba(255,255,255,0.1);
+    }
+
+    .poly-texture {
+      position: absolute;
+      width: 100%; height: 100%;
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* ── STALL MONOLITHS ── */
+    .stall-monolith {
+      position: relative;
+      width: 100%;
+      max-width: 300px;
+      height: 480px;
+      border-radius: 12px 12px 4px 4px !important;
+      box-shadow: 
+        inset 0 0 40px rgba(0,0,0,0.4),
+        20px 20px 60px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer;
+      margin: 0 auto;
+    }
+
+    .stall-monolith.stall-green { background: #1b4d3e; }
+    .stall-monolith.stall-blue { background: #1b3a4d; }
+    .stall-monolith.stall-grey { background: #2d2d2d; }
+
+    .stall-texture {
+      position: absolute;
+      inset: 0;
+      opacity: 0.12;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .stall-vents {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      background: rgba(0,0,0,0.15);
+      border-bottom: 2px solid rgba(0,0,0,0.2);
+    }
+
+    .stall-louver {
+      height: 5px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px !important;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .stall-door {
+      flex-grow: 1;
+      margin: 14px;
+      border: 4px solid rgba(0,0,0,0.2);
+      border-radius: 8px !important;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.1) 100%);
+    }
+
+    .stall-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+
+    .stall-title {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.7rem;
+      line-height: 1;
+      margin-bottom: 16px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      color: #fff;
+    }
+
+    .stall-tags {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .stall-tag {
+      padding: 4px 8px;
+      background: rgba(0,0,0,0.3);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      border-radius: 4px !important;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .stall-indicator {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.2);
+      padding: 12px;
+      border-radius: 6px !important;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stall-light {
+      width: 12px;
+      height: 12px;
+      border-radius: 50% !important;
+      box-shadow: 0 0 10px currentColor;
+      animation: stallPulse 2s infinite;
+    }
+
+    .stall-light.green { background: #3eff8b; color: #3eff8b; }
+    .stall-light.red { background: #ff3e3e; color: #ff3e3e; }
+
+    @keyframes stallPulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      50% { opacity: 0.4; }
+    }
+
+    .stall-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .stall-latch {
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 90px;
+      background: #333;
+      border-radius: 8px !important;
+      border: 1px solid #444;
+      box-shadow: -4px 4px 10px rgba(0,0,0,0.4);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stall-handle {
+      width: 5px;
+      height: 55px;
+      background: #1a1a1a;
+      border-radius: 3px !important;
+    }
+
+    .stall-ribs {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 35px;
+      display: flex;
+      justify-content: space-around;
+      padding: 0 20px;
+    }
+
+    .stall-rib {
+      width: 18px;
+      height: 100%;
+      background: rgba(0,0,0,0.2);
+      box-shadow: inset 4px 0 6px rgba(0,0,0,0.2);
+    }
+
+    /* Status text swap on hover */
+    .status-vacant { display: block; }
+    .status-occupied { display: none; }
+    .unit-container:hover .status-vacant { display: none; }
+    .unit-container:hover .status-occupied { display: block; }
+
+    @media (max-width: 1024px) {
+      .unit-container { width: 240px; height: 400px; }
+      .unit-id { font-size: 30px; }
+    }
+
+    @media (max-width: 768px) {
+      .unit-container { width: 220px; height: 370px; margin: 0 auto; }
     }
   </style>
 </head>
 <body class="grid-bg min-h-screen">
+
+  <svg style="display:none">
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </svg>
+
   <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-sm border-b border-[#1F1F1F]">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
@@ -123,58 +454,78 @@
   </nav>
 
   <main class="pt-32 pb-24">
+    <!-- ── HERO ── -->
     <section class="max-w-6xl mx-auto px-6">
-      <div class="grid grid-cols-12 gap-8">
-        <div class="col-span-12 lg:col-span-8">
-          <div class="animate-fade">
-            <div class="mono text-[#39FF14] text-sm mb-6 flex items-center">
-              <span class="w-2 h-2 bg-[#39FF14] mr-2"></span>
-              PREDICTIVE ANALYTICS v2.0
-            </div>
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-              KNOW WHERE<br>
-              <span class="text-[#00D4FF]">DEMAND</span> ARRIVES.
-            </h1>
-            <p class="text-xl text-gray-400 max-w-lg leading-relaxed mb-10">
-              The first predictive analytics platform built specifically for portable sanitation. 
-              Data-driven decisions. Zero guesswork.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4">
-              <a href="#" class="mono bg-[#39FF14] text-black px-8 py-4 font-semibold hover:bg-[#32DD12] transition-all glow-lime">
-                GET FREE FORECAST
-              </a>
-              <a href="#features" class="mono border border-[#333] text-white px-8 py-4 font-semibold hover:border-[#39FF14] hover:text-[#39FF14] transition-all">
-                VIEW SYSTEM
-              </a>
-            </div>
+      <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+        <!-- Left: Copy -->
+        <div class="flex-1 animate-fade">
+          <div class="mono text-[#39FF14] text-sm mb-6 flex items-center">
+            <span class="w-2 h-2 bg-[#39FF14] mr-2"></span>
+            PREDICTIVE ANALYTICS v2.0
+          </div>
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+            KNOW WHERE<br>
+            <span class="text-[#00D4FF]">DEMAND</span> ARRIVES.
+          </h1>
+          <p class="text-xl text-gray-400 max-w-lg leading-relaxed mb-10">
+            The first predictive analytics platform built specifically for portable sanitation. 
+            Data-driven decisions. Zero guesswork.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="#" class="mono bg-[#39FF14] text-black px-8 py-4 font-semibold hover:bg-[#32DD12] transition-all glow-lime">
+              GET FREE FORECAST
+            </a>
+            <a href="#features" class="mono border border-[#333] text-white px-8 py-4 font-semibold hover:border-[#39FF14] hover:text-[#39FF14] transition-all">
+              VIEW SYSTEM
+            </a>
           </div>
         </div>
-        
-        <div class="col-span-12 lg:col-span-4 mt-12 lg:mt-0">
-          <div class="animate-fade delay-200 terminal-border bg-[#0A0A0A] p-6">
-            <div class="mono text-xs text-gray-500 mb-4 flex items-center justify-between">
-              <span>MARKET TELEMETRY</span>
-              <span class="text-[#39FF14]">LIVE</span>
+
+        <!-- Right: Interactive Unit Card -->
+        <div class="flex-shrink-0">
+          <div class="unit-container">
+            <div class="poly-texture" style="filter: url(#noise)"></div>
+            <div class="ribwork"></div>
+            <div class="unit-vent">
+              <div class="vent-slot"></div><div class="vent-slot"></div><div class="vent-slot"></div><div class="vent-slot"></div>
+              <div class="vent-slot"></div><div class="vent-slot"></div><div class="vent-slot"></div><div class="vent-slot"></div>
             </div>
-            <div class="space-y-6">
-              <div class="border-b border-[#1F1F1F] pb-4">
-                <div class="mono text-4xl font-bold text-[#00D4FF]">$20B+</div>
-                <div class="mono text-xs text-gray-500 mt-1">MARKET SIZE // US PORTABLE SANITATION</div>
-              </div>
-              <div class="border-b border-[#1F1F1F] pb-4">
-                <div class="mono text-4xl font-bold text-[#39FF14]">7.8%</div>
-                <div class="mono text-xs text-gray-500 mt-1">ANNUAL GROWTH RATE</div>
-              </div>
+            <div class="content-panel">
               <div>
-                <div class="mono text-4xl font-bold text-[#FF6B35]">0</div>
-                <div class="mono text-xs text-gray-500 mt-1">DIRECT COMPETITORS // FIRST-MOVER</div>
+                <div class="indicator-track">
+                  <div class="indicator-slider"></div>
+                </div>
+                <span class="status-label status-vacant">Available</span>
+                <span class="status-label status-occupied" style="color: #d32f2f;">Occupied</span>
+              </div>
+              <h1 class="unit-id">PORTA<br>PULSE</h1>
+              <span class="unit-type">SMART MONITORING</span>
+              <div class="data-grid">
+                <div>
+                  <span class="data-label">Forecast</span>
+                  <span class="data-value">7-DAY</span>
+                </div>
+                <div>
+                  <span class="data-label">Accuracy</span>
+                  <span class="data-value">94.2%</span>
+                </div>
+                <div>
+                  <span class="data-label">Fleet</span>
+                  <span class="data-value">TRACKED</span>
+                </div>
+                <div>
+                  <span class="data-label">Status</span>
+                  <span class="data-value" style="color: #39FF14;">● LIVE</span>
+                </div>
               </div>
             </div>
+            <div class="door-latch"></div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ── SYSTEM ALERTS ── -->
     <section class="py-24 border-t border-[#1F1F1F] mt-24">
       <div class="max-w-6xl mx-auto px-6">
         <div class="mono text-xs text-gray-500 mb-8">// SYSTEM ALERTS</div>
@@ -211,11 +562,11 @@
       </div>
     </section>
 
+    <!-- ── FEATURES ── -->
     <section id="features" class="py-24 border-t border-[#1F1F1F]">
       <div class="max-w-6xl mx-auto px-6">
         <div class="mono text-xs text-gray-500 mb-8">// FEATURE_MODULES</div>
         <h2 class="text-4xl font-bold mb-16">PREDICTIVE <span class="text-[#00D4FF]">ENGINE</span></h2>
-        
         <div class="grid grid-cols-12 gap-8">
           <div class="col-span-12 lg:col-span-6">
             <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
@@ -228,7 +579,6 @@
               <div class="mono text-xs text-gray-600">SOURCES: MUNICIPAL_APIS // PERMIT_DATABASES // EVENT_APIS</div>
             </div>
           </div>
-          
           <div class="col-span-12 lg:col-span-6">
             <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
               <div class="flex items-start justify-between mb-6">
@@ -240,7 +590,6 @@
               <div class="mono text-xs text-gray-600">SOURCES: BUILDING_DEPT // GIS_MAPS // CONTRACTOR_DB</div>
             </div>
           </div>
-          
           <div class="col-span-12 lg:col-span-6">
             <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
               <div class="flex items-start justify-between mb-6">
@@ -252,7 +601,6 @@
               <div class="mono text-xs text-gray-600">SOURCES: NOAA_API // WEATHER_FORECAST // HISTORICAL_DATA</div>
             </div>
           </div>
-          
           <div class="col-span-12 lg:col-span-6">
             <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
               <div class="flex items-start justify-between mb-6">
@@ -264,7 +612,6 @@
               <div class="mono text-xs text-gray-600">OUTPUT: DEMAND_HEATMAP // ROUTE_OPTIMIZATION // ALERTS</div>
             </div>
           </div>
-          
           <div class="col-span-12 lg:col-span-6">
             <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
               <div class="flex items-start justify-between mb-6">
@@ -276,7 +623,6 @@
               <div class="mono text-xs text-gray-600">INTEGRATIONS: VERIFONE // GPS_IQ // FLEETMATICS // SAMO</div>
             </div>
           </div>
-          
           <div class="col-span-12 lg:col-span-6">
             <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
               <div class="flex items-start justify-between mb-6">
@@ -292,49 +638,106 @@
       </div>
     </section>
 
+    <!-- ── HOW IT WORKS ── -->
     <section id="how-it-works" class="py-24 border-t border-[#1F1F1F] bg-[#050505]">
       <div class="max-w-6xl mx-auto px-6">
         <div class="mono text-xs text-gray-500 mb-8">// DEPLOYMENT_SEQUENCE</div>
-        <h2 class="text-4xl font-bold mb-16">GET <span class="text-[#39FF14]">OPERATIONAL</span></h2>
-        
-        <div class="grid grid-cols-12 gap-8">
-          <div class="col-span-12 md:col-span-6 lg:col-span-3">
-            <div class="relative">
-              <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">01</div>
-              <h3 class="text-xl font-semibold mb-3">Connect Data</h3>
-              <p class="text-gray-400">Enter service areas. Connect GPS. We aggregate public data immediately.</p>
+        <h2 class="text-4xl font-bold mb-20">GET <span class="text-[#39FF14]">OPERATIONAL</span></h2>
+
+        <!-- Step 1: Connect -->
+        <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 mb-28">
+          <div class="stall-monolith stall-green" style="width:260px; height:420px; flex-shrink:0;">
+            <div class="stall-texture"></div>
+            <div class="stall-vents">
+              <div class="stall-louver"></div><div class="stall-louver"></div><div class="stall-louver"></div><div class="stall-louver"></div>
             </div>
+            <div class="stall-door">
+              <div class="stall-id">Step 01 // Connect</div>
+              <h2 class="stall-title">PLUG<br>IN</h2>
+              <div class="stall-tags">
+                <span class="stall-tag">GPS</span>
+                <span class="stall-tag">SERVICE AREAS</span>
+              </div>
+              <div class="stall-indicator">
+                <div class="stall-light green"></div>
+                <span class="stall-status">SYNCING...</span>
+              </div>
+            </div>
+            <div class="stall-latch"><div class="stall-handle"></div></div>
+            <div class="stall-ribs"><div class="stall-rib"></div><div class="stall-rib"></div><div class="stall-rib"></div></div>
           </div>
-          <div class="col-span-12 md:col-span-6 lg:col-span-3">
-            <div class="relative">
-              <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">02</div>
-              <h3 class="text-xl font-semibold mb-3">We Build Model</h3>
-              <p class="text-gray-400">System processes permits, weather, construction, and your history.</p>
-            </div>
+          <div class="flex-1">
+            <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">01</div>
+            <h3 class="text-2xl font-semibold mb-4">Connect Your Data</h3>
+            <p class="text-gray-400 text-lg leading-relaxed">Enter service areas. Connect GPS. Import fleet inventory. We start aggregating public permit data, construction filings, and event schedules immediately.</p>
           </div>
-          <div class="col-span-12 md:col-span-6 lg:col-span-3">
-            <div class="relative">
-              <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">03</div>
-              <h3 class="text-xl font-semibold mb-3">Get Predictions</h3>
-              <p class="text-gray-400">7-day forecast by zip. See where to move trucks. Chase contracts.</p>
+        </div>
+
+        <!-- Step 2: Predict -->
+        <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20 mb-28">
+          <div class="stall-monolith stall-blue" style="width:260px; height:420px; flex-shrink:0;">
+            <div class="stall-texture"></div>
+            <div class="stall-vents">
+              <div class="stall-louver"></div><div class="stall-louver"></div><div class="stall-louver"></div><div class="stall-louver"></div>
             </div>
+            <div class="stall-door">
+              <div class="stall-id">Step 02 // Predict</div>
+              <h2 class="stall-title">FORE<br>CAST</h2>
+              <div class="stall-tags">
+                <span class="stall-tag">7-DAY</span>
+                <span class="stall-tag">ZIP-LEVEL</span>
+              </div>
+              <div class="stall-indicator">
+                <div class="stall-light red"></div>
+                <span class="stall-status">DEMAND SPIKE DETECTED</span>
+              </div>
+            </div>
+            <div class="stall-latch"><div class="stall-handle"></div></div>
+            <div class="stall-ribs"><div class="stall-rib"></div><div class="stall-rib"></div><div class="stall-rib"></div></div>
           </div>
-          <div class="col-span-12 md:col-span-6 lg:col-span-3">
-            <div class="relative">
-              <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">04</div>
-              <h3 class="text-xl font-semibold mb-3">Optimize & Scale</h3>
-              <p class="text-gray-400">Utilization climbs. Capture premium pricing. Grow without adding trucks.</p>
+          <div class="flex-1">
+            <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">02</div>
+            <h3 class="text-2xl font-semibold mb-4">We Predict Demand</h3>
+            <p class="text-gray-400 text-lg leading-relaxed">Our engine processes permits, weather, construction activity, and your history. You get a 7-day demand forecast by zip code — before your competitors even know the event exists.</p>
+          </div>
+        </div>
+
+        <!-- Step 3: Deploy -->
+        <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div class="stall-monolith stall-grey" style="width:260px; height:420px; flex-shrink:0;">
+            <div class="stall-texture"></div>
+            <div class="stall-vents">
+              <div class="stall-louver"></div><div class="stall-louver"></div><div class="stall-louver"></div><div class="stall-louver"></div>
             </div>
+            <div class="stall-door">
+              <div class="stall-id">Step 03 // Deploy</div>
+              <h2 class="stall-title">MOVE<br>UNITS</h2>
+              <div class="stall-tags">
+                <span class="stall-tag">OPTIMIZED</span>
+                <span class="stall-tag">ROUTED</span>
+              </div>
+              <div class="stall-indicator">
+                <div class="stall-light green"></div>
+                <span class="stall-status">FLEET DEPLOYED</span>
+              </div>
+            </div>
+            <div class="stall-latch"><div class="stall-handle"></div></div>
+            <div class="stall-ribs"><div class="stall-rib"></div><div class="stall-rib"></div><div class="stall-rib"></div></div>
+          </div>
+          <div class="flex-1">
+            <div class="mono text-6xl font-bold text-[#1F1F1F] mb-4">03</div>
+            <h3 class="text-2xl font-semibold mb-4">Deploy & Scale</h3>
+            <p class="text-gray-400 text-lg leading-relaxed">Position units where demand is headed. Capture contracts before competitors. Utilization climbs, idle inventory drops, and you grow without adding trucks.</p>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ── PRICING ── -->
     <section id="pricing" class="py-24 border-t border-[#1F1F1F]">
       <div class="max-w-6xl mx-auto px-6">
         <div class="mono text-xs text-gray-500 mb-8">// SUBSCRIPTION_TIERS</div>
         <h2 class="text-4xl font-bold mb-16">SELECT <span class="text-[#00D4FF]">PLAN</span></h2>
-        
         <div class="grid grid-cols-12 gap-8 max-w-5xl mx-auto">
           <div class="col-span-12 md:col-span-4">
             <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
@@ -351,7 +754,6 @@
               <a href="#" class="mono block text-center border border-[#333] text-white px-6 py-3 hover:border-[#39FF14] hover:text-[#39FF14] transition-all">SIGN UP FREE</a>
             </div>
           </div>
-          
           <div class="col-span-12 md:col-span-4">
             <div class="terminal-border bg-[#0A0A0A] p-8 h-full border-[#00D4FF] relative">
               <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#00D4FF] text-black mono text-xs px-3 py-1">RECOMMENDED</div>
@@ -369,7 +771,6 @@
               <a href="#" class="mono block text-center bg-[#00D4FF] text-black px-6 py-3 font-semibold hover:bg-[#00B8E0] transition-all glow-blue">START TRIAL</a>
             </div>
           </div>
-          
           <div class="col-span-12 md:col-span-4">
             <div class="terminal-border bg-[#0A0A0A] p-8 h-full">
               <div class="mono text-xs text-gray-500 mb-2">TIER_03</div>
@@ -392,6 +793,7 @@
       </div>
     </section>
 
+    <!-- ── CTA ── -->
     <section class="py-24 border-t border-[#1F1F1F] bg-[#050505]">
       <div class="max-w-3xl mx-auto px-6 text-center">
         <div class="mono text-[#39FF14] text-sm mb-6">// JOIN_THE_NETWORK</div>
@@ -413,5 +815,20 @@
       </div>
     </div>
   </footer>
+  <script>
+    document.querySelectorAll('.stall-monolith').forEach(stall => {
+      stall.addEventListener('mousemove', (e) => {
+        const rect = stall.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const dx = (x - rect.width / 2) / 20;
+        const dy = (y - rect.height / 2) / 20;
+        stall.style.transform = `perspective(1000px) rotateY(${dx}deg) rotateX(${-dy}deg) translateY(-15px) scale(1.02)`;
+      });
+      stall.addEventListener('mouseleave', () => {
+        stall.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(0) scale(1)`;
+      });
+    });
+  </script>
 </body>
 </html>
