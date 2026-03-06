@@ -94,11 +94,25 @@ function extractEvents(content, source) {
 async function postEvent(event) {
   try {
     const payload = JSON.stringify({ type: 'event', ...event });
-    execSync(`curl -s -X POST -H "Content-Type: application/json" -d '${payload.replace(/'/g, "\\'")}' "${WEBHOOK_URL}"`, {
-      timeout: 10000, encoding: 'utf-8'
+    const url = new URL(WEBHOOK_URL);
+    const options = {
+      hostname: url.hostname,
+      path: url.pathname,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) }
+    };
+    await new Promise((resolve, reject) => {
+      const req = require('https').request(options, (res) => {
+        res.on('data', () => {});
+        res.on('end', resolve);
+      });
+      req.on('error', reject);
+      req.setTimeout(10000, () => { req.destroy(); reject(new Error('timeout')); });
+      req.write(payload);
+      req.end();
     });
   } catch (err) {
-    // Silent fail per event — don't crash the whole scraper
+    // Silent fail per event
   }
 }
 
