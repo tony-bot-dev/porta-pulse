@@ -6,7 +6,7 @@
  * Posts results to Google Sheets webhook.
  */
 
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycby28vIvvEuSFRx-F09wiM6O0TQVE7O8jWsFEOqae1UGrs5YCSjuy_ugOzQHpRxbsWFx/exec';
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwCSBe5ZDioJj5gf75dAILric0p46vxq8MBOO7fvw6OZpDRQv1-53z8xw6qMbasYvYl/exec';
 
 const SOURCES = [
   { name: 'Visit Phoenix', url: 'https://www.visitphoenix.com/events/', city: 'Phoenix' },
