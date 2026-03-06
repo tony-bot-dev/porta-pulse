@@ -25,8 +25,8 @@ const { execSync } = require('child_process');
 async function scrapeSource(source) {
   try {
     const raw = execSync(
-      `firecrawl scrape "${source.url}" --format markdown --timeout 30000`,
-      { encoding: 'utf-8', timeout: 45000, maxBuffer: 5 * 1024 * 1024 }
+      `firecrawl scrape "${source.url}" -f markdown --only-main-content`,
+      { encoding: 'utf-8', timeout: 60000, maxBuffer: 5 * 1024 * 1024 }
     );
     return { source, content: raw, error: null };
   } catch (err) {
